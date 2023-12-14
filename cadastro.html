@@ -27,51 +27,54 @@
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script>
         function loadAndSend() {
-          gapi.load('client', () => {
-            gapi.client.init({
-              apiKey: 'AIzaSyDq1_3tOQdeM3besaeg1-O4coztRsL3FZY',
-              discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-            }).then(() => {
-              console.log('API do Google Sheets carregada com sucesso!');
-              const email = document.getElementById('email').value;
-              const password = document.getElementById('password').value;
-      
-              gapi.client.sheets.spreadsheets.values.get({
-                spreadsheetId: '1WAxnZPqgbTAvqtTampi34xDkL-3-W13mnbIo2ACcIm4',
-                range: 'cadastros!B:C',
-              }).then(response => {
-                console.log('Dados da planilha:', response.result.values);
-                const data = response.result.values;
-      
-                for (let i = 0; i < data.length; i++) {
-                  const row = data[i];
-      
-                  // Ignora linhas vazias
-                  if (row.length === 0) {
-                    continue;
-                  }
-      
-                  console.log('Verificando linha:', row);
-                  const emailIndex = row.indexOf(email);
-                  const passwordIndex = row.indexOf(password);
-      
-                  if (emailIndex !== -1 && passwordIndex !== -1) {
-                    document.getElementById('error-message').innerText = '';
-                    alert('Login bem-sucedido!');
-                    // enviarEmails();  // Se precisar enviar e-mails após o login, descomente esta linha
-                    return;
-                  }
-                }
-      
-                document.getElementById('error-message').innerText = 'Email ou senha inválido(s)';
-              }).catch(error => {
-                console.error('Erro ao acessar a planilha:', error.result?.error?.message || error.message);
-              });
+            gapi.load('client', () => {
+                gapi.client.init({
+                    apiKey: 'AIzaSyDq1_3tOQdeM3besaeg1-O4coztRsL3FZY',
+                    discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                }).then(() => {
+                    console.log('API do Google Sheets carregada com sucesso!');
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+
+                    gapi.client.sheets.spreadsheets.values.get({
+                        spreadsheetId: '1WAxnZPqgbTAvqtTampi34xDkL-3-W13mnbIo2ACcIm4',
+                        range: 'cadastros!A:C',
+                    }).then(response => {
+                        console.log('Dados da planilha:', response.result.values);
+                        const data = response.result.values;
+
+                        for (let i = 0; i < data.length; i++) {
+                            const row = data[i];
+
+                            // Ignora linhas vazias
+                            if (row.length === 0) {
+                                continue;
+                            }
+
+                            console.log('Verificando linha:', row);
+                            const emailIndex = row.indexOf(email);
+                            const passwordIndex = row.indexOf(password);
+
+                            if (emailIndex !== -1 && passwordIndex !== -1) {
+                                document.getElementById('error-message').innerText = '';
+                                redirectToWelcomePage(row[0]);
+                                return;
+                            }
+                        }
+
+                        document.getElementById('error-message').innerText = 'Email ou senha inválido(s)';
+                    }).catch(error => {
+                        console.error('Erro ao acessar a planilha:', error.result?.error?.message || error.message);
+                    });
+                });
             });
-          });
         }
-      </script>
-      
+
+        function redirectToWelcomePage(name) {
+            // Redireciona para a página de boas-vindas passando o nome como parâmetro
+            window.location.href = `principal.html?name=${name}`;
+        }
+    </script>
 </body>
 
 </html>

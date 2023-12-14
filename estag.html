@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Documentos</title>
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input {
+        width: 200px;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        padding: 8px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 5px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #1E90FF;
+    }
+</style>
+<body>
+    <label for="nomeUsuario">Digite seu nome completo:</label>
+    <input type="text" id="nomeUsuario">
+    <button onclick="loadAndSearchName()">Buscar Documentos</button>
+
+    <ul id="listaDocumentos"></ul>
+    <p id="mensagem"></p>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        async function buscarDocumentos(nomeUsuario) {
+            const folderId = '1g48SOSMZWBK9xIAPWghVMGZbuONGrLH8';
+            const url = "https://www.googleapis.com/drive/v3/files?q=name%20contains%20%27" + encodeURIComponent(nomeUsuario) + "%27%20and%20%27" + encodeURIComponent(folderId) + "%27%20in%20parents&key=AIzaSyDDBEKKqEsvTDb66TbmvtfZMb8wyStdnXk";
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                const files = data.files;
+                const listaDocumentos = document.getElementById('listaDocumentos');
+                listaDocumentos.innerHTML = '';
+
+                if (files && files.length > 0) {
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const documentoNome = file.name;
+                        const documentoId = file.id;
+                        const documentoLink = "https://drive.google.com/file/d/" + documentoId;
+
+                        const listItem = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = documentoLink;
+                        link.textContent = documentoNome;
+
+                        listItem.appendChild(link);
+                        listaDocumentos.appendChild(listItem);
+                    }
+                } else {
+                    document.getElementById("mensagem").textContent = 'Nenhum documento encontrado.';
+                }
+            } catch (error) {
+                console.log("Erro ao obter os dados do Google Drive: " + error);
+            }
+        }
+
+        function loadAndSearchName() {
+            gapi.load('client', () => {
+                gapi.client.init({
+                    apiKey: 'AIzaSyDq1_3tOQdeM3besaeg1-O4coztRsL3FZY',
+                    discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                }).then(() => {
+                    console.log('API do Google Sheets carregada com sucesso!');
+                    searchName();
+                }).catch(error => {
+                    console.error('Erro ao carregar a API do Google Sheets:', error.message);
+                });
+            });
+        }
+
+        async function searchName() {
+            const spreadsheetId = '1WAxnZPqgbTAvqtTampi34xDkL-3-W13mnbIo2ACcIm4';
+            const range = 'estagiario!A:A';
+
+            const nomeUsuario = document.getElementById('nomeUsuario').value.toLowerCase();
+
+            if (gapi.client && gapi.client.sheets) {
+                try {
+                    const response = await gapi.client.sheets.spreadsheets.values.get({
+                        spreadsheetId: spreadsheetId,
+                        range: range,
+                    });
+
+                    const values = response.result.values;
+
+                    if (values && values.length > 0) {
+                        const found = values.some(row => row[0].toLowerCase() === nomeUsuario);
+
+                        if (found) {
+                            console.log('Nome do usuário encontrado na planilha!');
+                            // Chame a função para buscar documentos no Google Drive
+                            await buscarDocumentos(nomeUsuario);
+                        } else {
+                            console.log('Nome do usuário não encontrado na planilha.');
+                            // Faça o que for necessário se o nome do usuário não for encontrado
+                        }
+                    } else {
+                        console.log('Nenhum dado encontrado na planilha.');
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar dados da planilha:', error.message);
+                }
+            } else {
+                console.error('A biblioteca gapi não está carregada corretamente.');
+            }
+        }
+    </script>
+</body>
+
+</html>

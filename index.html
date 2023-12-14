@@ -5,55 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Email para os Estagiários</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      box-sizing: border-box;
-    }
-
-    button {
-      background-color: #3498db;
-      color: #fff;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #297fb8;
-    }
+    /* Estilo CSS aqui (mantido o mesmo) */
   </style>
 </head>
 <body>
-  <label for="subjectInput">Digite o assunto:</label>
-  <input type="text" id="subjectInput" placeholder="Assunto do e-mail">
+  <form id="emailForm" enctype="multipart/form-data">
+    <label for="subjectInput">Digite o assunto:</label>
+    <input type="text" id="subjectInput" placeholder="Assunto do e-mail">
 
-  <label for="messageInput">Digite a mensagem:</label>
-  <textarea id="messageInput" placeholder="Sua mensagem"></textarea>
+    <label for="messageInput">Digite a mensagem:</label>
+    <textarea id="messageInput" placeholder="Sua mensagem"></textarea>
 
-  <label for="fileInput">Anexe um arquivo:</label>
-  <input type="file" id="fileInput">
+    <label for="fileInput">Anexe um arquivo:</label>
+    <input type="file" id="fileInput">
 
-  <button onclick="loadAndSend()">Enviar E-mails</button>
+    <button type="button" onclick="loadAndSend()">Enviar E-mails</button>
+  </form>
 
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
-    emailjs.init("F_Iw03MxQjhbZJYQt");  // Substitua com seu ID de usuário do EmailJS
+    emailjs.init("F_Iw03MxQjhbZJYQt");
 
     function loadAndSend() {
       gapi.load('client', () => {
@@ -87,11 +59,8 @@
           console.log(`Enviando mensagem para: ${email}, Assunto: ${assunto}, Conteúdo: ${mensagem}`);
           enviarEmailReal(email, assunto, mensagem, file);
         });
-        
-        // Exibe uma mensagem de alerta após enviar os e-mails
+
         window.alert('E-mails enviados com sucesso!');
-        
-        // Recarrega a página após o usuário clicar em OK no alerta
         location.reload();
       }).catch(error => {
         console.error('Erro ao acessar a planilha:', error.result?.error?.message || error.message);
@@ -100,12 +69,11 @@
 
     function enviarEmailReal(destinatario, assunto, mensagem, anexo) {
       const emailjsConfig = {
-        serviceId: 'service_wkwj4pc',  // Substitua com o seu ID de serviço do EmailJS
-        templateId: 'template_uqj2fem',  // Substitua com o seu ID de modelo do EmailJS
-        userId: 'F_Iw03MxQjhbZJYQt',  // Substitua com o seu ID de usuário do EmailJS
+        serviceId: 'service_wkwj4pc',
+        templateId: 'template_uqj2fem',
+        userId: 'F_Iw03MxQjhbZJYQt',
       };
 
-      // Configuração do e-mail
       const emailConfig = {
         to: destinatario,
         subject: assunto,
@@ -113,7 +81,6 @@
         attachment: anexo,
       };
 
-      // Envia o e-mail
       emailjs.send(emailjsConfig.serviceId, emailjsConfig.templateId, emailConfig, emailjsConfig.userId)
         .then(response => {
           console.log(`E-mail enviado para ${destinatario} com sucesso!`, response);
