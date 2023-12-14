@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 id="welcome-message"></h2>
+
+    <script>
+        // Recupera o nome completo do usuário da URL
+        const fullName = new URLSearchParams(window.location.search).get('name');
+
+        // Função para capitalizar corretamente cada parte do nome
+        function capitalizeNamePart(namePart) {
+            return namePart
+                .toLowerCase()
+                .split(' ')
+                .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+                .join(' ');
+        }
+
+        // Função para obter o primeiro nome e sobrenome com capitalização adequada
+        function getFirstAndLastName(fullName) {
+            const names = fullName.split(' ');
+
+            const firstName = capitalizeNamePart(names[0]);
+
+            const lastName = names.slice(1).join(' ');
+
+            return { firstName, lastName };
+        }
+
+        // Obtemos o primeiro nome e sobrenome chamando a função
+        const { firstName, lastName } = getFirstAndLastName(fullName);
+
+        // Obtém a hora atual
+        const currentHour = new Date().getHours();
+
+        // Função para determinar a saudação com base na hora do dia
+        function getGreetingByHour(hour) {
+            if (hour >= 5 && hour < 12) {
+                return 'Bom dia';
+            } else if (hour >= 12 && hour < 18) {
+                return 'Boa tarde';
+            } else {
+                return 'Boa noite';
+            }
+        }
+
+        // Exibe a mensagem de boas-vindas com a saudação apropriada ou padrão
+        const welcomeMessageElement = document.getElementById('welcome-message');
+        if (currentHour >= 5 && currentHour < 12) {
+            welcomeMessageElement.innerText = `${getGreetingByHour(currentHour)}, ${firstName}!`;
+        } else if (currentHour >= 12 && currentHour < 18) {
+            welcomeMessageElement.innerText = `${getGreetingByHour(currentHour)}, ${firstName}!`;
+        } else {
+            welcomeMessageElement.innerText = `${getGreetingByHour(currentHour)}, ${firstName}!`;
+        }
+    </script>
+</body>
+
+</html>
