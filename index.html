@@ -12,11 +12,14 @@
   <button onclick="loadAndSend()">Carregar API e Enviar E-mails</button>
 
   <script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
+    emailjs.init("F_Iw03MxQjhbZJYQt");  // Substitua com seu ID de usuário do EmailJS
+
     function loadAndSend() {
       gapi.load('client', () => {
         gapi.client.init({
-          apiKey: 'AIzaSyDq1_3tOQdeM3besaeg1-O4coztRsL3FZY',  // Substitua 'YOUR_API_KEY' pela sua chave de API do Google Sheets
+          apiKey: 'AIzaSyDq1_3tOQdeM3besaeg1-O4coztRsL3FZY',
           discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
         }).then(() => {
           console.log('API do Google Sheets carregada com sucesso!');
@@ -29,7 +32,7 @@
 
     function enviarEmails() {
       const spreadsheetId = '1WAxnZPqgbTAvqtTampi34xDkL-3-W13mnbIo2ACcIm4';
-      const range = 'estagiario!B:B';  // Ajuste para o nome da folha 'estagiario'
+      const range = 'estagiario!B:B';
 
       gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId,
@@ -40,11 +43,35 @@
 
         emails.forEach(email => {
           console.log(`Enviando mensagem para: ${email}, Conteúdo: ${mensagem}`);
-          // Coloque sua lógica para enviar e-mails aqui
+          enviarEmailReal(email, mensagem);
         });
       }).catch(error => {
         console.error('Erro ao acessar a planilha:', error.result?.error?.message || error.message);
       });
+    }
+
+    function enviarEmailReal(destinatario, mensagem) {
+      // Substitua com suas credenciais e IDs do EmailJS
+      const emailjsConfig = {
+        serviceId: 'service_wkwj4pc',  // Substitua com o seu ID de serviço do EmailJS
+        templateId: 'template_uqj2fem',  // Substitua com o seu ID de modelo do EmailJS
+        userId: 'F_Iw03MxQjhbZJYQt',  // Substitua com o seu ID de usuário do EmailJS
+      };
+
+      // Configuração do e-mail
+      const emailConfig = {
+        to: destinatario,
+        message: mensagem,
+      };
+
+      // Envia o e-mail
+      emailjs.send(emailjsConfig.serviceId, emailjsConfig.templateId, emailConfig, emailjsConfig.userId)
+        .then(response => {
+          console.log(`E-mail enviado para ${destinatario} com sucesso!`, response);
+        })
+        .catch(error => {
+          console.error(`Erro ao enviar e-mail para ${destinatario}:`, error);
+        });
     }
   </script>
 </body>
