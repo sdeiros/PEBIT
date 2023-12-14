@@ -1,15 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Sender</title>
+  <title>Email para os Estagiários</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #3498db;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #297fb8;
+    }
+  </style>
 </head>
 <body>
+  <label for="subjectInput">Digite o assunto:</label>
+  <input type="text" id="subjectInput" placeholder="Assunto do e-mail">
+
   <label for="messageInput">Digite a mensagem:</label>
   <textarea id="messageInput" placeholder="Sua mensagem"></textarea>
 
-  <button onclick="loadAndSend()">Carregar API e Enviar E-mails</button>
+  <label for="fileInput">Anexe um arquivo:</label>
+  <input type="file" id="fileInput">
+
+  <button onclick="loadAndSend()">Enviar E-mails</button>
 
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
@@ -39,19 +78,27 @@
         range,
       }).then(response => {
         const emails = response.result.values.flat();
+        const assunto = document.getElementById('subjectInput').value;
         const mensagem = document.getElementById('messageInput').value;
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
 
         emails.forEach(email => {
-          console.log(`Enviando mensagem para: ${email}, Conteúdo: ${mensagem}`);
-          enviarEmailReal(email, mensagem);
+          console.log(`Enviando mensagem para: ${email}, Assunto: ${assunto}, Conteúdo: ${mensagem}`);
+          enviarEmailReal(email, assunto, mensagem, file);
         });
+        
+        // Exibe uma mensagem de alerta após enviar os e-mails
+        window.alert('E-mails enviados com sucesso!');
+        
+        // Recarrega a página após o usuário clicar em OK no alerta
+        location.reload();
       }).catch(error => {
         console.error('Erro ao acessar a planilha:', error.result?.error?.message || error.message);
       });
     }
 
-    function enviarEmailReal(destinatario, mensagem) {
-      // Substitua com suas credenciais e IDs do EmailJS
+    function enviarEmailReal(destinatario, assunto, mensagem, anexo) {
       const emailjsConfig = {
         serviceId: 'service_wkwj4pc',  // Substitua com o seu ID de serviço do EmailJS
         templateId: 'template_uqj2fem',  // Substitua com o seu ID de modelo do EmailJS
@@ -61,7 +108,9 @@
       // Configuração do e-mail
       const emailConfig = {
         to: destinatario,
+        subject: assunto,
         message: mensagem,
+        attachment: anexo,
       };
 
       // Envia o e-mail
