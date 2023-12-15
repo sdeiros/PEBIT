@@ -46,6 +46,7 @@
         color: #1E90FF;
     }
 </style>
+
 <body>
     <label for="nomeUsuario">Digite seu nome completo:</label>
     <input type="text" id="nomeUsuario">
@@ -56,7 +57,7 @@
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
         async function buscarDocumentos(nomeUsuario) {
-            const folderId = '1g48SOSMZWBK9xIAPWghVMGZbuONGrLH8';
+            const folderId = '1rVJEEsNJBaNFV7SobjueYK_QdAmPPpVm';
             const url = "https://www.googleapis.com/drive/v3/files?q=name%20contains%20%27" + encodeURIComponent(nomeUsuario) + "%27%20and%20%27" + encodeURIComponent(folderId) + "%27%20in%20parents&key=AIzaSyDDBEKKqEsvTDb66TbmvtfZMb8wyStdnXk";
 
             try {
@@ -106,7 +107,7 @@
 
         async function searchName() {
             const spreadsheetId = '1WAxnZPqgbTAvqtTampi34xDkL-3-W13mnbIo2ACcIm4';
-            const range = 'estagiario!A:A';
+            const range = 'estagiario!A2:A';  // Começa a busca a partir da segunda linha (A2)
 
             const nomeUsuario = document.getElementById('nomeUsuario').value.toLowerCase();
 
@@ -140,6 +141,7 @@
                 console.error('A biblioteca gapi não está carregada corretamente.');
             }
         }
+
     </script>
 </body>
 
