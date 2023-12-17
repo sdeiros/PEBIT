@@ -4,25 +4,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <title>CETREINA | PEBIT</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #ffffff;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
-        h2 {
-            color: #3498db;
+        nav {
+            text-align: center;
+        }
+
+        .logonav {
+            width: 3rem;
+            margin-top: 1rem;
+        }
+
+        .fundo {
+            margin-left: 2%;
+            margin-right: 2%;
+            margin-top: -2rem;
+            width: calc(100vw - 4%);
+            height: 60vh;
+            flex-shrink: 0;
+            border-radius: 70px;
+            background: linear-gradient(82deg, #FFCA8B -1.74%, #FFBC6C -1.73%, #EB7C07 17.47%, #F46060 49.73%, #FF8777 100.93%);
+        }
+
+        .txt {
+            position: relative;
+            text-align: center;
+            color: #FFF;
+            font-family: Inter;
+            font-size: 1.2rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            top: 4%;
+        }
+
+        .greeting {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 2.5vw;
+            color: #FF8300;
+            line-height: normal;
+            position: absolute;
+            left: 2%;
+        }
+
+        .name {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 500;
+            color: #FF8300;
+        }
+
+        .star {
+            position: absolute;
+            width: 04%;
+            height: auto;
+            top: 7rem;
+            left: 4%;
+        }
+
+        .conteudo {
+            position: absolute;
+            width: 40%;
+            color: #FFF;
+            font-family: Inter;
+            font-size: 1.2rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            left: 5%;
+            top: 45vh;
+        }
+
+        button {
+            border-style: none;
+            border-radius: 1.25rem;
+            background: #EB7800;
+            position: absolute;
+            left: 2%;
+            margin-top: 09%;
+            width: 16%;
+            height: 4rem;
+            flex-shrink: 0;
+            color: #FFF;
+            font-family: Inter;
+            font-size: 1.5vw;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
-    <h2 id="welcome-message"></h2>
+    <nav>
+        <img class="logonav" src="./src/logocetreina.png" alt="Logo do Cetreina">
+    </nav>
+
+    <div class="fundo">
+        <h6 class="txt">integrar, formar, pesquisar, interagir e aplicar</h6>
+        <img class="star" src="./src/Star 2.png">
+        <div class="conteudo">
+            <img class="logo" src="./src/PB-logo-cetreina (1) (3).png" alt="Logo do Cetreina">
+            <p>Integrar alunos ao mercado de trabalho, complementando a formação, incentivando pesquisa e
+                interação social,
+                visando reduzir evasão e aplicar conhecimentos desde cedo na carreira.</p>
+        </div>
+    </div>
+    <p class="greeting"></p>
+    <p style="color: #707070;
+    font-family: Inter;
+    font-size: 2vw; /* Utilizando vw para tamanho responsivo */
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    position: absolute;
+    left: 2%;
+    margin-top: 5.5%;
+    ">
+        serviços
+    </p>
+
+    <button onclick="redirectToIndex()">comunicado</button>
+
 
     <script>
+        function redirectToIndex() {
+            // Redireciona para a página index.html
+            window.location.href = 'index.html';
+        }
         // Recupera o nome completo do usuário da URL
         const fullName = new URLSearchParams(window.location.search).get('name');
 
@@ -52,7 +176,7 @@
         // Obtém a hora atual
         const currentHour = new Date().getHours();
 
-        // Função para determinar a saudação com base na hora do dia
+        // Função para obter a saudação com base na hora atual
         function getGreetingByHour(hour) {
             if (hour >= 5 && hour < 12) {
                 return 'Bom dia';
@@ -63,15 +187,9 @@
             }
         }
 
-        // Exibe a mensagem de boas-vindas com a saudação apropriada ou padrão
-        const welcomeMessageElement = document.getElementById('welcome-message');
-        if (currentHour >= 5 && currentHour < 12) {
-            welcomeMessageElement.innerText = `${getGreetingByHour(currentHour)}, ${firstName}!`;
-        } else if (currentHour >= 12 && currentHour < 18) {
-            welcomeMessageElement.innerText = `${getGreetingByHour(currentHour)}, ${firstName}!`;
-        } else {
-            welcomeMessageElement.innerText = `${getGreetingByHour(currentHour)}, ${firstName}!`;
-        }
+        // Adiciona a classe 'greeting' ao elemento <p> e aplica os estilos adequados
+        const greetingElement = document.querySelector('.greeting');
+        greetingElement.innerHTML = `${getGreetingByHour(currentHour)}, <span class="name">${firstName}</span>`;
     </script>
 </body>
 
